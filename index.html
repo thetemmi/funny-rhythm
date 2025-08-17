@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friday Night Funkin' Multiplayer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .menu-title {
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 3px 3px 0px #000;
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        .menu-form {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .game-screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: linear-gradient(to bottom, #1a1a2e, #16213e);
+        }
+
+        .stage {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, #2d1b69, #4a0e4e);
+            border-top: 3px solid #ff6b6b;
+        }
+
+        .characters-container {
+            position: absolute;
+            bottom: 10%;
+            width: 100%;
+            height: 30%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 10%;
+        }
+
+        .character {
+            width: 200px;
+            height: 250px;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .character.pico {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.5);
+        }
+
+        .character.boyfriend {
+            background: linear-gradient(135deg, #2196F3, #1565C0);
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(33, 150, 243, 0.5);
+        }
+
+        .character::before {
+            content: attr(data-name);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .character.singing {
+            transform: scale(1.1);
+        }
+
+        .notes-container {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 70%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .note-lane {
+            width: 80px;
+            height: 100%;
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .note-target {
+            position: absolute;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            border: 3px solid white;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .note-target.left { background: rgba(128, 0, 128, 0.7); }
+        .note-target.down { background: rgba(0, 191, 255, 0.7); }
+        .note-target.up { background: rgba(0, 255, 0, 0.7); }
+        .note-target.right { background: rgba(255, 0, 0, 0.7); }
+
+        .note {
+            position: absolute;
+            width: 50px;
+            height: 20px;
+            border-radius: 10px;
+            border: 2px solid white;
+            animation: notefall 4s linear;
+        }
+
+        .note.left { background: rgba(128, 0, 128, 0.8); }
+        .note.down { background: rgba(0, 191, 255, 0.8); }
+        .note.up { background: rgba(0, 255, 0, 0.8); }
+        .note.right { background: rgba(255, 0, 0, 0.8); }
+
+        @keyframes notefall {
+            from { top: -50px; }
+            to { top: calc(100% - 80px); }
+        }
+
+        .ui-container {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 50px;
+            z-index: 100;
+        }
+
+        .score-display {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .health-bar {
+            width: 300px;
+            height: 20px;
+            background: rgba(255, 0, 0, 0.3);
+            border: 2px solid white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            width: 50%;
+            transition: width 0.3s;
+        }
+
+        .connection-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .connection-status.connected {
+            background: rgba(0, 255, 0, 0.7);
+        }
+
+        .waiting-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+        }
+
+        .waiting-message {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .control-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+
+        .control-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .control-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .control-option input[type="radio"] {
+            margin: 0;
+        }
+
+        .mobile-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            gap: 10px;
+            z-index: 200;
+        }
+
+        .mobile-controls.active {
+            display: flex;
+        }
+
+        .mobile-btn {
+            width: 70px;
+            height: 70px;
+            border: 3px solid white;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+            backdrop-filter: blur(10px);
+        }
+
+        .mobile-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .mobile-btn.left { 
+            background: rgba(128, 0, 128, 0.3);
+            border-color: rgba(128, 0, 128, 0.8);
+        }
+        .mobile-btn.down { 
+            background: rgba(0, 191, 255, 0.3);
+            border-color: rgba(0, 191, 255, 0.8);
+        }
+        .mobile-btn.up { 
+            background: rgba(0, 255, 0, 0.3);
+            border-color: rgba(0, 255, 0, 0.8);
+        }
+        .mobile-btn.right { 
+            background: rgba(255, 0, 0, 0.3);
+            border-color: rgba(255, 0, 0, 0.8);
+        }
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Меню -->
+        <div class="menu-screen" id="menuScreen">
+            <div class="menu-title">Friday Night Funkin'<br>Multiplayer</div>
+            <div class="menu-form">
+                <div class="input-group">
+                    <label for="nickname">Ваш никнейм:</label>
+                    <input type="text" id="nickname" placeholder="Введите никнейм" maxlength="15">
+                </div>
+                <div class="input-group">
+                    <label for="roomName">Название комнаты:</label>
+                    <input type="text" id="roomName" placeholder="Создать или подключиться" maxlength="20">
+                </div>
+                <div class="input-group">
+                    <label>Тип управления:</label>
+                    <div class="control-options">
+                        <label class="control-option">
+                            <input type="radio" name="controlType" value="keyboard" checked>
+                            <span>🎹 Клавиатура</span>
+                        </label>
+                        <label class="control-option">
+                            <input type="radio" name="controlType" value="mobile">
+                            <span>📱 Сенсорное</span>
+                        </label>
+                    </div>
+                </div>
+                <button class="btn" onclick="startGame()">Начать игру</button>
+                <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                    Создайте комнату или подключитесь к существующей
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран ожидания -->
+        <div class="waiting-screen" id="waitingScreen">
+            <div class="waiting-message">
+                <div class="spinner"></div>
+                Ожидание противника...
+                <div style="font-size: 1rem; margin-top: 10px;">
+                    Комната: <span id="currentRoom"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Игровой экран -->
+        <div class="game-screen" id="gameScreen">
+            <div class="stage"></div>
+            
+            <div class="characters-container">
+                <div class="character pico" id="picoChar" data-name="PICO"></div>
+                <div class="character boyfriend" id="boyfriendChar" data-name="BOYFRIEND"></div>
+            </div>
+
+            <div class="notes-container">
+                <div class="note-lane" id="leftLane">
+                    <div class="note-target left"></div>
+                </div>
+                <div class="note-lane" id="downLane">
+                    <div class="note-target down"></div>
+                </div>
+                <div class="note-lane" id="upLane">
+                    <div class="note-target up"></div>
+                </div>
+                <div class="note-lane" id="rightLane">
+                    <div class="note-target right"></div>
+                </div>
+            </div>
+
+            <div class="ui-container">
+                <div class="score-display">
+                    <div>Ваш счет: <span id="playerScore">0</span></div>
+                    <div>Противник: <span id="opponentScore">0</span></div>
+                    <div class="health-bar">
+                        <div class="health-fill" id="healthFill"></div>
+                    </div>
+                </div>
+                <div class="score-display">
+                    <div>Combo: <span id="combo">0</span></div>
+                    <div>Точность: <span id="accuracy">100%</span></div>
+                </div>
+            </div>
+
+            <div class="connection-status" id="connectionStatus">Подключение...</div>
+
+            <div class="instructions" id="instructions">
+                Используйте клавиши: A S W D или стрелки ← ↓ ↑ →
+            </div>
+
+            <!-- Мобильное управление -->
+            <div class="mobile-controls" id="mobileControls">
+                <div class="mobile-btn left" data-direction="left">←</div>
+                <div class="mobile-btn down" data-direction="down">↓</div>
+                <div class="mobile-btn up" data-direction="up">↑</div>
+                <div class="mobile-btn right" data-direction="right">→</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Состояние игры
+        let gameState = {
+            currentScreen: 'menu',
+            playerName: '',
+            roomName: '',
+            playerCharacter: '',
+            opponentCharacter: '',
+            isConnected: false,
+            gameStarted: false,
+            score: { player: 0, opponent: 0 },
+            health: 50,
+            combo: 0,
+            totalNotes: 0,
+            hitNotes: 0,
+            notes: [],
+            noteSpeed: 2,
+            lastNoteTime: 0
+        };
+
+        // Симуляция сетевого подключения
+        let networkSim = {
+            rooms: {},
+            currentRoom: null,
+            playerId: Math.random().toString(36).substr(2, 9)
+        };
+
+        // Звуковые частоты для каждой ноты
+        const noteFreqs = {
+            left: 220,   // A3
+            down: 246,   // B3
+            up: 294,     // D4
+            right: 330   // E4
+        };
+
+        // Аудио контекст для генерации звуков
+        let audioContext = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playNoteSound(direction, pitch = 1) {
+            if (!audioContext) initAudio();
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(noteFreqs[direction] * pitch, audioContext.currentTime);
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        function startGame() {
+            const nickname = document.getElementById('nickname').value.trim();
+            const roomName = document.getElementById('roomName').value.trim();
+
+            if (!nickname || !roomName) {
+                alert('Пожалуйста, заполните все поля!');
+                return;
+            }
+
+            gameState.playerName = nickname;
+            gameState.roomName = roomName;
+
+            // Симуляция подключения к комнате
+            connectToRoom(roomName, nickname);
+        }
+
+        function connectToRoom(roomName, playerName) {
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('waitingScreen').style.display = 'flex';
+            document.getElementById('currentRoom').textContent = roomName;
+
+            // Симуляция сетевого подключения
+            setTimeout(() => {
+                if (!networkSim.rooms[roomName]) {
+                    networkSim.rooms[roomName] = {
+                        players: [],
+                        gameActive: false
+                    };
+                }
+
+                const room = networkSim.rooms[roomName];
+                const player = {
+                    id: networkSim.playerId,
+                    name: playerName
+                };
+
+                room.players.push(player);
+
+                if (room.players.length === 1) {
+                    gameState.playerCharacter = 'boyfriend';
+                    gameState.opponentCharacter = 'pico';
+                    // Ждем второго игрока
+                } else if (room.players.length === 2) {
+                    // Если это второй игрок
+                    if (room.players[0].id === networkSim.playerId) {
+                        gameState.playerCharacter = 'boyfriend';
+                        gameState.opponentCharacter = 'pico';
+                    } else {
+                        gameState.playerCharacter = 'pico';
+                        gameState.opponentCharacter = 'boyfriend';
+                    }
+                    startMultiplayerGame();
+                } else {
+                    alert('Комната переполнена!');
+                    return;
+                }
+
+                // Симуляция подключения второго игрока через 3-5 секунд
+                if (room.players.length === 1) {
+                    setTimeout(() => {
+                        room.players.push({
+                            id: 'opponent_' + Math.random().toString(36).substr(2, 9),
+                            name: 'Opponent'
+                        });
+                        startMultiplayerGame();
+                    }, Math.random() * 2000 + 3000);
+                }
+            }, 1000);
+        }
+
+        function startMultiplayerGame() {
+            document.getElementById('waitingScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('connectionStatus').textContent = 'Подключено';
+            document.getElementById('connectionStatus').classList.add('connected');
+
+            gameState.isConnected = true;
+            gameState.gameStarted = true;
+            gameState.currentScreen = 'game';
+
+            initAudio();
+            setupKeyListeners();
+            startNoteGeneration();
+            gameLoop();
+        }
+
+        function setupKeyListeners() {
+            const keyMap = {
+                'KeyA': 'left', 'ArrowLeft': 'left',
+                'KeyS': 'down', 'ArrowDown': 'down',
+                'KeyW': 'up', 'ArrowUp': 'up',
+                'KeyD': 'right', 'ArrowRight': 'right'
+            };
+
+            document.addEventListener('keydown', (e) => {
+                if (gameState.currentScreen !== 'game') return;
+                
+                const direction = keyMap[e.code];
+                if (direction) {
+                    e.preventDefault();
+                    handleNoteHit(direction);
+                }
+            });
+        }
+
+        function handleNoteHit(direction) {
+            const lane = document.getElementById(direction + 'Lane');
+            const notes = lane.querySelectorAll('.note');
+            let hit = false;
+            let bestNote = null;
+            let bestDistance = Infinity;
+
+            // Найти ближайшую ноту в зоне попадания
+            notes.forEach(note => {
+                const noteRect = note.getBoundingClientRect();
+                const targetRect = lane.querySelector('.note-target').getBoundingClientRect();
+                const distance = Math.abs(noteRect.bottom - targetRect.top);
+                
+                if (distance < 50 && distance < bestDistance) {
+                    bestNote = note;
+                    bestDistance = distance;
+                }
+            });
+
+            if (bestNote) {
+                hit = true;
+                bestNote.remove();
+                
+                // Рассчет точности и очков
+                let scoreMultiplier = 1;
+                let accuracy = 100;
+                
+                if (bestDistance < 10) {
+                    scoreMultiplier = 3;
+                    accuracy = 100;
+                } else if (bestDistance < 25) {
+                    scoreMultiplier = 2;
+                    accuracy = 80;
+                } else {
+                    scoreMultiplier = 1;
+                    accuracy = 60;
+                }
+
+                gameState.combo++;
+                gameState.hitNotes++;
+                gameState.score.player += 50 * scoreMultiplier * (1 + gameState.combo * 0.1);
+                
+                // Восстановление здоровья при попадании
+                gameState.health = Math.min(100, gameState.health + 2);
+
+                // Звуковой эффект с изменением питча
+                const pitch = 1 + (gameState.combo * 0.05);
+                playNoteSound(direction, pitch);
+
+                // Анимация персонажа
+                const character = gameState.playerCharacter === 'boyfriend' ? 
+                    document.getElementById('boyfriendChar') : 
+                    document.getElementById('picoChar');
+                character.classList.add('singing');
+                setTimeout(() => character.classList.remove('singing'), 200);
+
+            } else {
+                // Промах
+                gameState.combo = 0;
+                gameState.health = Math.max(0, gameState.health - 5);
+                
+                // Звук промаха
+                if (audioContext) {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.setValueAtTime(100, audioContext.currentTime);
+                    oscillator.type = 'sawtooth';
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                }
+            }
+
+            updateUI();
+        }
+
+        function generateNote() {
+            const directions = ['left', 'down', 'up', 'right'];
+            const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+            const lane = document.getElementById(randomDirection + 'Lane');
+            
+            const note = document.createElement('div');
+            note.className = `note ${randomDirection}`;
+            note.style.left = '15px';
+            note.style.top = '-50px';
+            
+            lane.appendChild(note);
+            gameState.totalNotes++;
+
+            // Удаление ноты, когда она выходит за экран
+            setTimeout(() => {
+                if (note.parentNode) {
+                    note.remove();
+                    // Потеря здоровья за пропущенную ноту
+                    gameState.health = Math.max(0, gameState.health - 3);
+                    gameState.combo = 0;
+                    updateUI();
+                }
+            }, 4000);
+        }
+
+        function startNoteGeneration() {
+            setInterval(() => {
+                if (gameState.gameStarted && Math.random() < 0.7) {
+                    generateNote();
+                }
+            }, 800);
+        }
+
+        function updateUI() {
+            document.getElementById('playerScore').textContent = Math.floor(gameState.score.player);
+            document.getElementById('combo').textContent = gameState.combo;
+            
+            const accuracy = gameState.totalNotes > 0 ? 
+                Math.floor((gameState.hitNotes / gameState.totalNotes) * 100) : 100;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            
+            const healthPercentage = (gameState.health / 100) * 100;
+            document.getElementById('healthFill').style.width = healthPercentage + '%';
+
+            // Проверка окончания игры
+            if (gameState.health <= 0) {
+                gameOver();
+            }
+        }
+
+        function gameOver() {
+            gameState.gameStarted = false;
+            alert(`Игра окончена! Ваш счет: ${Math.floor(gameState.score.player)}`);
+            
+            // Возврат в меню
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('menuScreen').style.display = 'flex';
+            gameState.currentScreen = 'menu';
+            
+            // Сброс состояния
+            resetGame();
+        }
+
+        function resetGame() {
+            gameState.score = { player: 0, opponent: 0 };
+            gameState.health = 50;
+            gameState.combo = 0;
+            gameState.totalNotes = 0;
+            gameState.hitNotes = 0;
+            gameState.gameStarted = false;
+            
+            // Очистка нот
+            document.querySelectorAll('.note').forEach(note => note.remove());
+        }
+
+        function gameLoop() {
+            if (gameState.gameStarted) {
+                updateUI();
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Автофокус на поле никнейма
+            document.getElementById('nickname').focus();
+            
+            // Enter для быстрого старта
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && gameState.currentScreen === 'menu') {
+                    startGame();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
