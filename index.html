@@ -805,6 +805,19 @@
                     <input type="text" id="nickname" placeholder="Введите никнейм" maxlength="15">
                 </div>
                 <div class="input-group">
+                    <label>Режим игры:</label>
+                    <div class="control-options">
+                        <label class="control-option">
+                            <input type="radio" name="gameMode" value="multiplayer" checked>
+                            <span>👥 Мультиплеер</span>
+                        </label>
+                        <label class="control-option">
+                            <input type="radio" name="gameMode" value="singleplayer">
+                            <span>🎮 Одиночная игра</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="input-group" id="roomGroup">
                     <label for="roomName">Название комнаты:</label>
                     <input type="text" id="roomName" placeholder="Создать или подключиться" maxlength="20">
                 </div>
@@ -916,6 +929,7 @@
             currentScreen: 'menu',
             playerName: '',
             roomName: '',
+            gameMode: 'multiplayer',
             controlType: 'keyboard',
             playerCharacter: '',
             opponentCharacter: '',
@@ -1146,22 +1160,55 @@
 
         function startGame() {
             const nickname = document.getElementById('nickname').value.trim();
-            const roomName = document.getElementById('roomName').value.trim();
+            const gameMode = document.querySelector('input[name="gameMode"]:checked').value;
             const controlType = document.querySelector('input[name="controlType"]:checked').value;
 
-            if (!nickname || !roomName) {
-                alert('Пожалуйста, заполните все поля!');
+            if (!nickname) {
+                alert('Пожалуйста, введите никнейм!');
                 return;
             }
 
             gameState.playerName = nickname;
-            gameState.roomName = roomName;
+            gameState.gameMode = gameMode;
             gameState.controlType = controlType;
 
-            // Симуляция подключения к комнате
-            connectToRoom(roomName, nickname);
+            if (gameMode === 'singleplayer') {
+                startSinglePlayerGame();
+            } else {
+                const roomName = document.getElementById('roomName').value.trim();
+                if (!roomName) {
+                    alert('Пожалуйста, введите название комнаты!');
+                    return;
+                }
+                gameState.roomName = roomName;
+                connectToRoom(roomName, nickname);
+            }
         }
 
+        function startSinglePlayerGame() {
+            // Настройка одиночной игры
+            gameState.playerCharacter = 'boyfriend';
+            gameState.opponentCharacter = 'pico';
+            gameState.isConnected = true;
+            gameState.gameStarted = true;
+            gameState.currentScreen = 'game';
+
+            // Переход к игровому экрану
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('connectionStatus').textContent = 'Одиночная игра';
+            document.getElementById('connectionStatus').classList.add('connected');
+
+            // Устанавливаем никнеймы
+            document.getElementById('boyfriendNickname').textContent = gameState.playerName;
+            document.getElementById('picoNickname').textContent = 'CPU';
+
+            initAudio();
+            setupControls();
+            startNoteGeneration();
+            playInstrumental();
+            gameLoop();
+        }
         function connectToRoom(roomName, playerName) {
             document.getElementById('menuScreen').style.display = 'none';
             document.getElementById('waitingScreen').style.display = 'flex';
@@ -1188,6 +1235,17 @@
                     gameState.playerCharacter = 'boyfriend';
                     gameState.opponentCharacter = 'pico';
                     // Ждем второго игрока
+                    
+                    // Симуляция подключения второго игрока через 3-5 секунд
+                    setTimeout(() => {
+                        if (room.players.length === 1) {
+                            room.players.push({
+                                id: 'opponent_' + Math.random().toString(36).substr(2, 9),
+                                name: 'Player2'
+                            });
+                            startMultiplayerGame();
+                        }
+                    }, Math.random() * 2000 + 3000);
                 } else if (room.players.length === 2) {
                     // Если это второй игрок
                     if (room.players[0].id === networkSim.playerId) {
@@ -1201,17 +1259,6 @@
                 } else {
                     alert('Комната переполнена!');
                     return;
-                }
-
-                // Симуляция подключения второго игрока через 3-5 секунд
-                if (room.players.length === 1) {
-                    setTimeout(() => {
-                        room.players.push({
-                            id: 'opponent_' + Math.random().toString(36).substr(2, 9),
-                            name: 'Opponent'
-                        });
-                        startMultiplayerGame();
-                    }, Math.random() * 2000 + 3000);
                 }
             }, 1000);
         }
@@ -1237,6 +1284,12 @@
         }
 
         function updatePlayerNicknames() {
+            if (gameState.gameMode === 'singleplayer') {
+                document.getElementById('boyfriendNickname').textContent = gameState.playerName;
+                document.getElementById('picoNickname').textContent = 'CPU';
+                return;
+            }
+
             const room = networkSim.rooms[gameState.roomName];
             if (!room) return;
 
@@ -1553,6 +1606,19 @@
             if (isMobileDevice()) {
                 document.querySelector('input[value="mobile"]').checked = true;
             }
+
+            // Обработка переключения режима игры
+            const gameModeInputs = document.querySelectorAll('input[name="gameMode"]');
+            gameModeInputs.forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const roomGroup = document.getElementById('roomGroup');
+                    if (e.target.value === 'singleplayer') {
+                        roomGroup.style.display = 'none';
+                    } else {
+                        roomGroup.style.display = 'block';
+                    }
+                });
+            });
         });
 
         function isMobileDevice() {
