@@ -1417,32 +1417,6 @@
                 setTimeout(() => characterElement.classList.remove('singing'), 300);
 
             } else {
-                    scoreMultiplier = 2;
-                    accuracy = 80;
-                } else {
-                    scoreMultiplier = 1;
-                    accuracy = 60;
-                }
-
-                gameState.combo++;
-                gameState.hitNotes++;
-                gameState.score.player += 50 * scoreMultiplier * (1 + gameState.combo * 0.1);
-                
-                // Восстановление здоровья при попадании
-                gameState.health = Math.min(100, gameState.health + 2);
-
-                // Звуковой эффект с изменением питча
-                const pitch = 1 + (gameState.combo * 0.05);
-                playNoteSound(direction, pitch);
-
-                // Анимация персонажа
-                const character = gameState.playerCharacter === 'boyfriend' ? 
-                    document.getElementById('boyfriendChar') : 
-                    document.getElementById('picoChar');
-                character.classList.add('singing');
-                setTimeout(() => character.classList.remove('singing'), 200);
-
-            } else {
                 // Промах
                 gameState.combo = 0;
                 gameState.health = Math.max(0, gameState.health - 5);
@@ -1532,6 +1506,7 @@
 
         function gameOver() {
             gameState.gameStarted = false;
+            stopInstrumental(); // Останавливаем инструментал
             alert(`Игра окончена! Ваш счет: ${Math.floor(gameState.score.player)}`);
             
             // Возврат в меню
