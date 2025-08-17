@@ -154,87 +154,254 @@
         .character.pico {
             background: linear-gradient(135deg, #4CAF50, #2E7D32);
             border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.5);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.6);
             position: relative;
             overflow: hidden;
+            border: 3px solid #1B5E20;
         }
 
-        .character.pico::after {
-            content: '';
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, #81C784 30%, #4CAF50 70%);
-            border-radius: 50%;
-            border: 3px solid #2E7D32;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .character.pico::before {
-            content: '';
-            position: absolute;
-            top: 45%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 100px;
-            background: linear-gradient(135deg, #66BB6A, #43A047);
-            border-radius: 15px;
-            border: 2px solid #2E7D32;
-            z-index: 1;
-        }
-
-        .character.boyfriend {
-            background: linear-gradient(135deg, #2196F3, #1565C0);
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(33, 150, 243, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .character.boyfriend::after {
-            content: '';
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, #90CAF9 30%, #42A5F5 70%);
-            border-radius: 50%;
-            border: 3px solid #1565C0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .character.boyfriend::before {
-            content: '';
-            position: absolute;
-            top: 45%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 100px;
-            background: linear-gradient(135deg, #64B5F6, #1976D2);
-            border-radius: 15px;
-            border: 2px solid #1565C0;
-            z-index: 1;
-        }
-
-        /* Добавим шапочку для Boyfriend */
-        .character.boyfriend .cap {
+        /* Голова Пико */
+        .character.pico .head {
             position: absolute;
             top: 15%;
             left: 50%;
             transform: translateX(-50%);
             width: 70px;
+            height: 70px;
+            background: radial-gradient(circle at 30% 30%, #A5D6A7, #66BB6A, #4CAF50);
+            border-radius: 50%;
+            border: 3px solid #2E7D32;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Глаза Пико */
+        .character.pico .eyes {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
             height: 20px;
-            background: linear-gradient(135deg, #FF5722, #D84315);
-            border-radius: 35px 35px 10px 10px;
+        }
+
+        .character.pico .eyes::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #000 40%, #333 100%);
+            border-radius: 50%;
+        }
+
+        .character.pico .eyes::after {
+            content: '';
+            position: absolute;
+            right: 5px;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #000 40%, #333 100%);
+            border-radius: 50%;
+        }
+
+        /* Волосы Пико */
+        .character.pico .hair {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 40px;
+            background: linear-gradient(135deg, #FF7043, #E64A19);
+            border-radius: 40px 40px 20px 20px;
             border: 2px solid #BF360C;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Тело Пико */
+        .character.pico .body {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85px;
+            height: 110px;
+            background: linear-gradient(135deg, #66BB6A, #43A047, #2E7D32);
+            border-radius: 20px;
+            border: 3px solid #1B5E20;
+            box-shadow: inset -3px -3px 6px rgba(0,0,0,0.2);
+        }
+
+        /* Руки Пико */
+        .character.pico .arms {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 30px;
+        }
+
+        .character.pico .arms::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 40px;
+            height: 20px;
+            background: linear-gradient(135deg, #A5D6A7, #66BB6A);
+            border-radius: 15px;
+            border: 2px solid #2E7D32;
+        }
+
+        .character.pico .arms::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            width: 40px;
+            height: 20px;
+            background: linear-gradient(135deg, #A5D6A7, #66BB6A);
+            border-radius: 15px;
+            border: 2px solid #2E7D32;
+        }
+
+        .character.boyfriend {
+            background: linear-gradient(135deg, #2196F3, #1565C0);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.6);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #0D47A1;
+        }
+
+        /* Голова Boyfriend */
+        .character.boyfriend .head {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle at 30% 30%, #BBDEFB, #64B5F6, #42A5F5);
+            border-radius: 50%;
+            border: 3px solid #1565C0;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Глаза Boyfriend */
+        .character.boyfriend .eyes {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 20px;
+        }
+
+        .character.boyfriend .eyes::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #000 40%, #333 100%);
+            border-radius: 50%;
+        }
+
+        .character.boyfriend .eyes::after {
+            content: '';
+            position: absolute;
+            right: 5px;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #000 40%, #333 100%);
+            border-radius: 50%;
+        }
+
+        /* Волосы Boyfriend */
+        .character.boyfriend .hair {
+            position: absolute;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85px;
+            height: 45px;
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            border-radius: 42px 42px 20px 20px;
+            border: 2px solid #0D47A1;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Кепка Boyfriend */
+        .character.boyfriend .cap {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 75px;
+            height: 25px;
+            background: linear-gradient(135deg, #FF5722, #D84315);
+            border-radius: 37px 37px 15px 15px;
+            border: 3px solid #BF360C;
             z-index: 2;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+        }
+
+        .character.boyfriend .cap::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            width: 20px;
+            height: 15px;
+            background: linear-gradient(135deg, #FF7043, #FF5722);
+            border-radius: 10px 10px 5px 5px;
+            border: 2px solid #D84315;
+        }
+
+        /* Тело Boyfriend */
+        .character.boyfriend .body {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85px;
+            height: 110px;
+            background: linear-gradient(135deg, #64B5F6, #1976D2, #1565C0);
+            border-radius: 20px;
+            border: 3px solid #0D47A1;
+            box-shadow: inset -3px -3px 6px rgba(0,0,0,0.2);
+        }
+
+        /* Руки Boyfriend */
+        .character.boyfriend .arms {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 30px;
+        }
+
+        .character.boyfriend .arms::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 40px;
+            height: 20px;
+            background: linear-gradient(135deg, #BBDEFB, #64B5F6);
+            border-radius: 15px;
+            border: 2px solid #1565C0;
+        }
+
+        .character.boyfriend .arms::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            width: 40px;
+            height: 20px;
+            background: linear-gradient(135deg, #BBDEFB, #64B5F6);
+            border-radius: 15px;
+            border: 2px solid #1565C0;
         }
 
         /* Микрофон для персонажей */
@@ -263,16 +430,21 @@
             border: 2px solid #000;
         }
 
-        .character::before {
-            content: attr(data-name);
+        .character .nickname {
             position: absolute;
-            top: -30px;
+            top: -40px;
             left: 50%;
             transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
             color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
             font-weight: bold;
-            font-size: 1.2rem;
-            text-shadow: 2px 2px 0px #000;
+            font-size: 1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+            z-index: 10;
         }
 
         .character.singing {
@@ -672,11 +844,23 @@
             <div class="stage"></div>
             
             <div class="characters-container">
-                <div class="character pico" id="picoChar" data-name="PICO">
+                <div class="character pico" id="picoChar">
+                    <div class="nickname" id="picoNickname">PICO</div>
+                    <div class="hair"></div>
+                    <div class="head"></div>
+                    <div class="eyes"></div>
+                    <div class="body"></div>
+                    <div class="arms"></div>
                     <div class="microphone"></div>
                 </div>
-                <div class="character boyfriend" id="boyfriendChar" data-name="BOYFRIEND">
+                <div class="character boyfriend" id="boyfriendChar">
+                    <div class="nickname" id="boyfriendNickname">BOYFRIEND</div>
+                    <div class="hair"></div>
                     <div class="cap"></div>
+                    <div class="head"></div>
+                    <div class="eyes"></div>
+                    <div class="body"></div>
+                    <div class="arms"></div>
                     <div class="microphone"></div>
                 </div>
             </div>
@@ -764,6 +948,14 @@
 
         // Предзагруженные сэмплы (base64 синтезированные звуки)
         const noteSamples = {};
+        const vocalSamples = {
+            pico: null,
+            boyfriend: null
+        };
+        
+        // Генератор инструментала
+        let instrumentalTrack = null;
+        let instrumentalSource = null;
         
         // Аудио контекст для генерации звуков
         let audioContext = null;
@@ -772,6 +964,103 @@
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 generateNoteSamples();
+                loadVocalSamples();
+                generateInstrumental();
+            }
+        }
+
+        function loadVocalSamples() {
+            // Попытка загрузки вокальных файлов
+            ['pico', 'boyfriend'].forEach(character => {
+                const audio = new Audio();
+                audio.crossOrigin = 'anonymous';
+                audio.preload = 'auto';
+                
+                audio.addEventListener('canplaythrough', () => {
+                    vocalSamples[character] = audio;
+                    console.log(`Loaded vocal sample for ${character}`);
+                });
+                
+                audio.addEventListener('error', () => {
+                    console.log(`Could not load ${character}.mp3, using synthesized vocals`);
+                    vocalSamples[character] = null;
+                });
+                
+                // Попытка загрузки файла
+                audio.src = `${character}.mp3`;
+            });
+        }
+
+        function generateInstrumental() {
+            // Создаем простой инструментальный трек
+            const duration = 120; // 2 минуты
+            const sampleRate = audioContext.sampleRate;
+            const frameCount = sampleRate * duration;
+            instrumentalTrack = audioContext.createBuffer(2, frameCount, sampleRate);
+            
+            const leftChannel = instrumentalTrack.getChannelData(0);
+            const rightChannel = instrumentalTrack.getChannelData(1);
+            
+            // Генерируем базовый бит на 120 BPM
+            const bpm = 120;
+            const beatInterval = (60 / bpm) * sampleRate;
+            
+            for (let i = 0; i < frameCount; i++) {
+                const t = i / sampleRate;
+                const beatPosition = (i % beatInterval) / beatInterval;
+                
+                // Басс-барабан на каждый бит
+                let kick = 0;
+                if (beatPosition < 0.1) {
+                    kick = Math.sin(2 * Math.PI * 60 * t) * Math.exp(-beatPosition * 20) * 0.3;
+                }
+                
+                // Хай-хет на off-beat
+                let hihat = 0;
+                if (beatPosition > 0.4 && beatPosition < 0.5) {
+                    hihat = (Math.random() - 0.5) * Math.exp(-(beatPosition - 0.45) * 50) * 0.1;
+                }
+                
+                // Простая басовая линия
+                let bass = Math.sin(2 * Math.PI * 80 * t + Math.sin(2 * Math.PI * 0.25 * t)) * 0.2;
+                
+                // Аккорды на синтезаторе
+                let synth = 0;
+                const chordFreqs = [220, 330, 440]; // A, E, A
+                chordFreqs.forEach(freq => {
+                    synth += Math.sin(2 * Math.PI * freq * t) * 0.05;
+                });
+                
+                const sample = kick + hihat + bass + synth;
+                leftChannel[i] = sample;
+                rightChannel[i] = sample * 0.9; // Немного стерео эффекта
+            }
+        }
+
+        function playInstrumental() {
+            if (!audioContext || !instrumentalTrack) return;
+            
+            if (instrumentalSource) {
+                instrumentalSource.stop();
+            }
+            
+            instrumentalSource = audioContext.createBufferSource();
+            const gainNode = audioContext.createGain();
+            
+            instrumentalSource.buffer = instrumentalTrack;
+            instrumentalSource.loop = true;
+            
+            instrumentalSource.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            instrumentalSource.start(audioContext.currentTime);
+        }
+
+        function stopInstrumental() {
+            if (instrumentalSource) {
+                instrumentalSource.stop();
+                instrumentalSource = null;
             }
         }
 
@@ -840,6 +1129,19 @@
             gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
             
             source.start(audioContext.currentTime);
+        }
+
+        function playVocalSample(character) {
+            const sample = vocalSamples[character];
+            if (sample && sample.readyState >= 4) {
+                // Если есть загруженный файл
+                sample.currentTime = 0;
+                sample.volume = 0.6;
+                sample.play().catch(e => console.log('Vocal playback failed:', e));
+            } else {
+                // Используем синтезированный вокал
+                playNoteSound('up', 1.5 + Math.random() * 0.5);
+            }
         }
 
         function startGame() {
@@ -924,13 +1226,30 @@
             gameState.gameStarted = true;
             gameState.currentScreen = 'game';
 
+            // Устанавливаем никнеймы игроков
+            updatePlayerNicknames();
+
             initAudio();
             setupControls();
             startNoteGeneration();
+            playInstrumental(); // Запускаем инструментал
             gameLoop();
         }
 
-        function setupControls() {
+        function updatePlayerNicknames() {
+            const room = networkSim.rooms[gameState.roomName];
+            if (!room) return;
+
+            if (gameState.playerCharacter === 'boyfriend') {
+                document.getElementById('boyfriendNickname').textContent = gameState.playerName;
+                document.getElementById('picoNickname').textContent = 
+                    room.players.find(p => p.id !== networkSim.playerId)?.name || 'Opponent';
+            } else {
+                document.getElementById('picoNickname').textContent = gameState.playerName;
+                document.getElementById('boyfriendNickname').textContent = 
+                    room.players.find(p => p.id !== networkSim.playerId)?.name || 'Opponent';
+            }
+        }
             if (gameState.controlType === 'keyboard') {
                 setupKeyListeners();
                 document.getElementById('instructions').textContent = 'Используйте клавиши: A S W D или стрелки ← ↓ ↑ →';
@@ -1040,13 +1359,14 @@
             let bestNote = null;
             let bestDistance = Infinity;
 
-            // Найти ближайшую ноту в зоне попадания
+            // Найти ближайшую ноту в зоне попадания (увеличенная зона)
             notes.forEach(note => {
                 const noteRect = note.getBoundingClientRect();
                 const targetRect = lane.querySelector('.note-target').getBoundingClientRect();
                 const distance = Math.abs(noteRect.bottom - targetRect.top);
                 
-                if (distance < 50 && distance < bestDistance) {
+                // Увеличили зону попадания с 50 до 80 пикселей
+                if (distance < 80 && distance < bestDistance) {
                     bestNote = note;
                     bestDistance = distance;
                 }
@@ -1056,14 +1376,47 @@
                 hit = true;
                 bestNote.remove();
                 
-                // Рассчет точности и очков
+                // Рассчет точности и очков (более мягкая система)
                 let scoreMultiplier = 1;
                 let accuracy = 100;
                 
-                if (bestDistance < 10) {
+                if (bestDistance < 20) {
                     scoreMultiplier = 3;
                     accuracy = 100;
-                } else if (bestDistance < 25) {
+                } else if (bestDistance < 40) {
+                    scoreMultiplier = 2.5;
+                    accuracy = 85;
+                } else if (bestDistance < 60) {
+                    scoreMultiplier = 2;
+                    accuracy = 70;
+                } else {
+                    scoreMultiplier = 1.5;
+                    accuracy = 55;
+                }
+
+                gameState.combo++;
+                gameState.hitNotes++;
+                gameState.score.player += 50 * scoreMultiplier * (1 + gameState.combo * 0.1);
+                
+                // Восстановление здоровья при попадании
+                gameState.health = Math.min(100, gameState.health + 2);
+
+                // Звуковой эффект с изменением питча
+                const pitch = 1 + (gameState.combo * 0.05);
+                playNoteSound(direction, pitch);
+
+                // Воспроизведение вокального сэмпла
+                const character = gameState.playerCharacter;
+                playVocalSample(character);
+
+                // Анимация персонажа
+                const characterElement = gameState.playerCharacter === 'boyfriend' ? 
+                    document.getElementById('boyfriendChar') : 
+                    document.getElementById('picoChar');
+                characterElement.classList.add('singing');
+                setTimeout(() => characterElement.classList.remove('singing'), 300);
+
+            } else {
                     scoreMultiplier = 2;
                     accuracy = 80;
                 } else {
